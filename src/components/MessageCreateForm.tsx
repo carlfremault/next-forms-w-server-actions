@@ -5,9 +5,12 @@ import { createMessage } from "@/app/actions";
 import { SubmitButton } from "@/components/SubmitButton";
 import { EMPTY_FORM_STATE } from "@/app/utils";
 import FieldError from "./FieldError";
+import { useToastMessage } from "@/hooks/useToastMessage";
 
 const MessageCreateForm = () => {
   const [formState, action] = useFormState(createMessage, EMPTY_FORM_STATE);
+
+  useToastMessage(formState);
 
   return (
     <form action={action} className="flex flex-col gap-y-2">
@@ -26,7 +29,6 @@ const MessageCreateForm = () => {
       />
       <FieldError formState={formState} name="text" />
       <SubmitButton label="Create" loading="Creating..." />
-      <span className="font-bold">{formState.message}</span>
     </form>
   );
 };
