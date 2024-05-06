@@ -2,14 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { FormState, fromErrorToFormState, toFormState } from "./utils";
 
 type Message = {
   id: string;
   text: string;
-};
-
-type FormState = {
-  message: string;
 };
 
 let messages: Message[] = [
@@ -28,6 +25,7 @@ let messages: Message[] = [
 ];
 
 const createMessageSchema = z.object({
+  title: z.string().min(1).max(191),
   text: z.string().min(1).max(191),
 });
 
@@ -43,23 +41,20 @@ export const createMessage = async (
   await new Promise((resolve) => setTimeout(resolve, 250));
 
   try {
-    const { text } = createMessageSchema.parse({
+    const data = createMessageSchema.parse({
+      title: formData.get("title"),
       text: formData.get("text"),
     });
 
     messages.push({
       id: crypto.randomUUID(),
-      text,
+      ...data,
     });
   } catch (error) {
-    return {
-      message: "Something went wrong",
-    };
+    return fromErrorToFormState(error);
   }
 
   revalidatePath("/");
 
-  return {
-    message: "Message created",
-  };
+  return toFormState("SUCCESS", "Message created");
 };
