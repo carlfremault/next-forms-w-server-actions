@@ -19,6 +19,18 @@ const useToastMessage = (formState: FormState) => {
       prevTimestamp.current = formState.timestamp;
     }
   }, [formState, showToast]);
+
+  return (
+    <noscript>
+      {formState.status === "ERROR" && (
+        <div style={{ color: "red" }}>{formState.message}</div>
+      )}
+
+      {formState.status === "SUCCESS" && (
+        <div style={{ color: "green" }}>{formState.message}</div>
+      )}
+    </noscript>
+  );
 };
 
 export { useToastMessage };

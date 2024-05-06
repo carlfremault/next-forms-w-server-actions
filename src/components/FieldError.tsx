@@ -13,4 +13,4 @@ const FieldError = ({ formState, name }: FieldErrorProps) => {
   );
 };
 
-export default FieldError;
+export { FieldError };
